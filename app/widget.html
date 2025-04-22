@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Zoho PhoneBridge Widget</title>
+        <style>
+            body, #zoho-cti-app {
+                /* avoid scrollbars */
+                width: 300px;
+                height: 300px;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+            div.cti-scale-adjusment {
+                -ms-zoom: 0.84;
+                -moz-transform: scale(0.84);
+                -moz-transform-origin: 0 0;
+                -o-transform: scale(0.84);
+                -o-transform-origin: 0 0;
+                -webkit-transform: scale(0.84);
+                -webkit-transform-origin: 0 0;
+            }
+            iframe.zoho-cti-iframe {
+                width:450px;
+                height:545px;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="height:3px;" ></div>
+        <div id="zoho-cti-app " class="cti-scale-adjusment">
+            <iframe
+                id="cti-iframe"
+                class="zoho-cti-iframe"
+                title="Dialpad"
+                allow="microphone; speaker-selection; autoplay; camera; display-capture; hid"
+                sandbox="allow-popups allow-scripts allow-same-origin"
+                frameborder=0
+                ></iframe>
+        </div>
+        <script>
+            const ctiIframeUrl = 'https://localhost-dot-uv-beta.appspot.com/apps/SSmxqQnFkekvCKuW4ux4cRCEK';
+            const zohoOrigin = 'https://phonebridge.zoho.com';
+            let ctiOrigin = URL.parse(ctiIframeUrl).origin;
+            const ctiIframeId = 'cti-iframe';
+            function receiveEvents(evt) {
+                console.debug(`Zoho PB Widget received event origin=${evt.origin}`);
+                console.debug(evt.data);
+                if(evt.origin === zohoOrigin){
+                    document.getElementById(ctiIframeId).contentWindow.postMessage(evt.data, ctiOrigin);
+                } else if(evt.origin === ctiOrigin){
+                    if(evt.data.method === 'change_cti_iframe_url'){
+                        document.getElementById(ctiIframeId).src = evt.data.url;
+                        ctiOrigin = URL.parse(evt.data.url).origin;
+                        return;
+                    }
+                    parent.postMessage(evt.data, zohoOrigin);
+                }
+            }
+            (function() {
+                window.addEventListener("message", receiveEvents, false);
+                document.getElementById(ctiIframeId).src = ctiIframeUrl;
+            })();
+        </script>
+    </body>
+</html>

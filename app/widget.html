@@ -50,7 +50,7 @@
             let ctiOrigin = URL.parse(ctiIframeUrl).origin;
             const ctiIframeId = 'cti-iframe';
             function receiveEvents(evt) {
-                console.debug(`Zoho PB Widget received event origin=${evt.origin}`);
+                console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
                 console.debug(evt.data);
                 if(evt.origin === zohoOrigin){
                     console.debug('DP-ZPB-BROKER', `Forwarding to ${ctiOrigin}`);

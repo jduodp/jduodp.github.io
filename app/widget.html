@@ -6,31 +6,22 @@
         <title>Dialpad's PhoneBridge Widget</title>
         <style>
             body, #zoho-cti-app {
-                /* avoid scrollbars */
-                width: 615px;
-                height: 475px;
+                width: 472px;
+                height: 610px;
                 margin: 0;
                 padding: 0;
                 border: 0;
             }
-            div.cti-scale-adjusment {
-                -ms-zoom: 0.84;
-                -moz-transform: scale(0.84);
-                -moz-transform-origin: 0 0;
-                -o-transform: scale(0.84);
-                -o-transform-origin: 0 0;
-                -webkit-transform: scale(0.84);
-                -webkit-transform-origin: 0 0;
-            }
             iframe.zoho-cti-iframe {
-                width:475px;
-                height:615px;
+                width: 472px;
+                height: 610px;
                 border-radius: 10px;
+                border: 0.5px solid grey;
             }
         </style>
     </head>
     <body>
-        <div id="zoho-cti-app " class="cti-scale-adjusment">
+        <div>
             <iframe
                 id="cti-iframe"
                 class="zoho-cti-iframe"

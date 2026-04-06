@@ -5,12 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Dialpad's PhoneBridge Widget</title>
         <style>
-            body, #zoho-cti-app {
+            html, body, #zoho-cti-app {
                 width: 472px;
                 height: 610px;
                 margin: 0;
                 padding: 0;
                 border: 0;
+                overflow: hidden;
             }
             iframe.zoho-cti-iframe {
                 width: 472px;
@@ -21,7 +22,7 @@
         </style>
     </head>
     <body>
-        <div>
+        <div id="zoho-cti-app">
             <iframe
                 id="cti-iframe"
                 class="zoho-cti-iframe"

@@ -37,6 +37,12 @@
             const zohoOrigin = 'https://phonebridge.zoho.com';
             let ctiOrigin = URL.parse(ctiIframeUrl).origin;
             const ctiIframeId = 'cti-iframe';
+            console.log('DP-ZPB-BROKER override active', {
+                ctiIframeUrl,
+                ctiOrigin,
+                zohoOrigin
+            });
+            
             function receiveEvents(evt) {
                 console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
                 console.debug(evt.data);

@@ -1,69 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+  <html lang="en">
     <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Dialpad's PhoneBridge Widget</title>
-        <style>
-            html, body, #zoho-cti-app {
-                width: 472px;
-                height: 610px;
-                margin: 0;
-                padding: 0;
-                border: 0;
-                /* #overflow: hidden; */
-            }
-            iframe.zoho-cti-iframe {
-                width: 472px;
-                height: 610px;
-                border-radius: 10px;
-                border: 0.5px solid grey;
-            }
-        </style>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Dialpad's PhoneBridge Widget</title>
+      <style>
+        html, body, #zoho-cti-app {
+          width: 472px;
+          height: 610px;
+          margin: 0;
+          padding: 0;
+          border: 0;
+        }
+        iframe.zoho-cti-iframe {
+          width: 472px;
+          height: 610px;
+          border-radius: 10px;
+          border: 0.5px solid grey;
+        }
+      </style>
     </head>
     <body>
-        <div id="zoho-cti-app">
-            <iframe
-                id="cti-iframe"
-                class="zoho-cti-iframe"
-                title="Dialpad"
-                allow="microphone; speaker-selection; autoplay; camera; display-capture; hid"
-                sandbox="allow-popups allow-scripts allow-same-origin allow-forms"
-                frameborder=0
-                ></iframe>
-        </div>
-        <script>
-            let ctiIframeUrl = 'https://matias-zpb-2ca395d.uv-beta.dialpad.net/apps/zoho?staticVersion=00047fe';
-            const zohoOrigin = 'https://phonebridge.zoho.com';
-            let ctiOrigin = URL.parse(ctiIframeUrl).origin;
-            const ctiIframeId = 'cti-iframe';
-            console.log('DP-ZPB-BROKER override active', {
-                ctiIframeUrl,
-                ctiOrigin,
-                zohoOrigin
-            });
-            
-            function receiveEvents(evt) {
-                console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
-                console.debug(evt.data);
-                if(evt.origin === zohoOrigin){
-                    console.debug('DP-ZPB-BROKER', `Forwarding to ${ctiOrigin}`);
-                    document.getElementById(ctiIframeId).contentWindow.postMessage(evt.data, ctiOrigin);
-                } else if(evt.origin === ctiOrigin){
-                    if(evt.data.method === 'change_cti_iframe_url'){
-                        ctiIframeUrl = evt.data.url;
-                        document.getElementById(ctiIframeId).src = ctiIframeUrl;
-                        ctiOrigin = URL.parse(ctiIframeUrl).origin;
-                        return;
-                    }
-                    console.debug('DP-ZPB-BROKER', `Forwarding to ${zohoOrigin}`);
-                    parent.postMessage(evt.data, zohoOrigin);
-                }
+      <div id="zoho-cti-app">
+        <iframe
+          id="cti-iframe"
+          class="zoho-cti-iframe"
+          title="Dialpad"
+          allow="microphone; speaker-selection; autoplay; camera; display-capture; hid"
+          sandbox="allow-popups allow-scripts allow-same-origin allow-forms"
+          frameborder="0"
+        ></iframe>
+      </div>
+      <script>
+        let ctiIframeUrl = 'https://matias-zpb-2ca395d.uv-beta.dialpad.net/apps/zoho?staticVersion=00047fe';
+        const zohoOrigin = 'https://phonebridge.zoho.com';
+        let ctiOrigin = new URL(ctiIframeUrl).origin;
+        const ctiIframeId = 'cti-iframe';
+
+        function receiveEvents(evt) {
+          console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
+          console.debug(evt.data);
+
+          if (evt.origin === zohoOrigin) {
+            console.debug('DP-ZPB-BROKER', `Forwarding to ${ctiOrigin}`);
+            document.getElementById(ctiIframeId).contentWindow.postMessage(evt.data, ctiOrigin);
+          } else if (evt.origin === ctiOrigin) {
+            if (evt.data && evt.data.method === 'change_cti_iframe_url') {
+              ctiIframeUrl = evt.data.url;
+              document.getElementById(ctiIframeId).src = ctiIframeUrl;
+              ctiOrigin = new URL(ctiIframeUrl).origin;
+              return;
             }
-            (function() {
-                window.addEventListener("message", receiveEvents, false);
-                document.getElementById(ctiIframeId).src = ctiIframeUrl;
-            })();
-        </script>
+            console.debug('DP-ZPB-BROKER', `Forwarding to ${zohoOrigin}`);
+            parent.postMessage(evt.data, zohoOrigin);
+          }
+        }
+
+        (function () {
+          window.addEventListener('message', receiveEvents, false);
+          document.getElementById(ctiIframeId).src = ctiIframeUrl;
+        })();
+      </script>
     </body>
-</html>
+  </html>

@@ -1,8 +1,8 @@
  <!DOCTYPE html>
   <html lang="en">
     <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
       <title>Dialpad's PhoneBridge Widget</title>
       <style>
         body, #zoho-cti-app {
@@ -12,6 +12,7 @@
           padding: 0;
           border: 0;
         }
+
         iframe.zoho-cti-iframe {
           width: 472px;
           height: 610px;
@@ -30,11 +31,12 @@
           sandbox="allow-popups allow-scripts allow-same-origin allow-forms"
         ></iframe>
       </div>
+
       <script>
         const DIALPAD_ORIGIN = 'https://dialpadbeta.com';
+        const ZOHO_ORIGIN = 'https://phonebridge.zoho.com';
 
         let ctiIframeUrl = DIALPAD_ORIGIN + '/apps/zoho';
-        const zohoOrigin = 'https://phonebridge.zoho.com';
         const ctiIframeId = 'cti-iframe';
         const ctiIframe = document.getElementById(ctiIframeId);
         let ctiOrigin = DIALPAD_ORIGIN;
@@ -44,6 +46,7 @@
             console.warn('DP-ZPB-BROKER', 'Ignoring empty CTI iframe URL');
             return null;
           }
+
           try {
             return new URL(url, DIALPAD_ORIGIN);
           } catch (error) {
@@ -57,6 +60,7 @@
           if (!parsedUrl) {
             return false;
           }
+
           if (parsedUrl.origin !== DIALPAD_ORIGIN) {
             console.warn(
               'DP-ZPB-BROKER',
@@ -64,6 +68,7 @@
             );
             return false;
           }
+
           ctiIframeUrl = parsedUrl.href;
           ctiOrigin = parsedUrl.origin;
           ctiIframe.src = ctiIframeUrl;
@@ -73,7 +78,8 @@
         function receiveEvents(evt) {
           console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
           console.debug(evt.data);
-          if (evt.origin === zohoOrigin) {
+
+          if (evt.origin === ZOHO_ORIGIN) {
             console.debug('DP-ZPB-BROKER', `Forwarding to ${ctiOrigin}`);
             ctiIframe.contentWindow.postMessage(evt.data, ctiOrigin);
           } else if (evt.origin === ctiOrigin) {
@@ -81,8 +87,9 @@
               updateCtiIframeUrl(evt.data.url);
               return;
             }
-            console.debug('DP-ZPB-BROKER', `Forwarding to ${zohoOrigin}`);
-            parent.postMessage(evt.data, zohoOrigin);
+
+            console.debug('DP-ZPB-BROKER', `Forwarding to ${ZOHO_ORIGIN}`);
+            parent.postMessage(evt.data, ZOHO_ORIGIN);
           }
         }
 

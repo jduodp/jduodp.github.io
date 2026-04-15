@@ -1,11 +1,11 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Dialpad's PhoneBridge Widget</title>
       <style>
-        body, #zoho-cti-app {
+        html, body, #zoho-cti-app {
           width: 472px;
           height: 610px;
           margin: 0;
@@ -21,77 +21,46 @@
       </style>
     </head>
     <body>
-      <div>
+      <div id="zoho-cti-app">
         <iframe
           id="cti-iframe"
           class="zoho-cti-iframe"
           title="Dialpad"
           allow="microphone; speaker-selection; autoplay; camera; display-capture; hid"
           sandbox="allow-popups allow-scripts allow-same-origin allow-forms"
+          frameborder="0"
         ></iframe>
       </div>
       <script>
-        const DIALPAD_ORIGIN = 'https://dialpadbeta.com';
-        const ZOHO_ORIGIN = 'https://phonebridge.zoho.com';
-
-        let ctiIframeUrl = DIALPAD_ORIGIN + '/apps/zoho';
+        let ctiIframeUrl = 'https://matias-zpb-2ca395d.uv-beta.dialpad.net/apps/zoho?staticVersion=00047fe';
+        let ctiIframeUrl = 'https://matias-zpb-2ca395d.uv-beta.dialpad.net/apps/zoho';
+        const zohoOrigin = 'https://phonebridge.zoho.com';
+        let ctiOrigin = new URL(ctiIframeUrl).origin;
         const ctiIframeId = 'cti-iframe';
-        const ctiIframe = document.getElementById(ctiIframeId);
-        let ctiOrigin = DIALPAD_ORIGIN;
-
-        function parseCtiIframeUrl(url) {
-          if (typeof url !== 'string' || !url.trim()) {
-            console.warn('DP-ZPB-BROKER', 'Ignoring empty CTI iframe URL');
-            return null;
-          }
-          try {
-            return new URL(url, DIALPAD_ORIGIN);
-          } catch (error) {
-            console.warn('DP-ZPB-BROKER', 'Ignoring invalid CTI iframe URL', url, error);
-            return null;
-          }
-        }
-
-        function updateCtiIframeUrl(url) {
-          const parsedUrl = parseCtiIframeUrl(url);
-          if (!parsedUrl) {
-            return false;
-          }
-          if (parsedUrl.origin !== DIALPAD_ORIGIN) {
-            console.warn(
-              'DP-ZPB-BROKER',
-              `Ignoring CTI iframe URL for unexpected origin=${parsedUrl.origin}`
-            );
-            return false;
-          }
-          ctiIframeUrl = parsedUrl.href;
-          ctiOrigin = parsedUrl.origin;
-          ctiIframe.src = ctiIframeUrl;
-          return true;
-        }
 
         function receiveEvents(evt) {
           console.debug('DP-ZPB-BROKER', `Zoho PB Widget received event origin=${evt.origin}`);
           console.debug(evt.data);
 
-          if (evt.origin === ZOHO_ORIGIN) {
+          if (evt.origin === zohoOrigin) {
             console.debug('DP-ZPB-BROKER', `Forwarding to ${ctiOrigin}`);
-            ctiIframe.contentWindow.postMessage(evt.data, ctiOrigin);
+            document.getElementById(ctiIframeId).contentWindow.postMessage(evt.data, ctiOrigin);
           } else if (evt.origin === ctiOrigin) {
             if (evt.data && evt.data.method === 'change_cti_iframe_url') {
-              updateCtiIframeUrl(evt.data.url);
+              ctiIframeUrl = evt.data.url;
+              document.getElementById(ctiIframeId).src = ctiIframeUrl;
+              ctiOrigin = new URL(ctiIframeUrl).origin;
               return;
             }
-            console.debug('DP-ZPB-BROKER', `Forwarding to ${ZOHO_ORIGIN}`);
-            parent.postMessage(evt.data, ZOHO_ORIGIN);
+            console.debug('DP-ZPB-BROKER', `Forwarding to ${zohoOrigin}`);
+            parent.postMessage(evt.data, zohoOrigin);
           }
         }
 
-        (function() {
+        (function () {
           window.addEventListener('message', receiveEvents, false);
-          updateCtiIframeUrl(ctiIframeUrl);
+          document.getElementById(ctiIframeId).src = ctiIframeUrl;
         })();
       </script>
     </body>
   </html>
-

@@ -7,6 +7,14 @@
       "alg": "RS384",
       "use": "sig",
       "kid": "41851ba2c04483ba4c57afd44aa996a2"
+    },
+    {
+      "kty": "RSA",
+      "n": "snquDHNCvdVAnapirMg2lxuH-_SFBP7j_o_YBAosnZMpFvW9tytxzoqFfwFaY2p_zM89Dacogqt9zxckIQymmfOr8jXuYm7ucjV2zhodKjBWhdON670k6bwkPodDJzZGopg66FN62XwT0PnXW3hEa8hCdtfISvuDCKI-HI0Nd6q5x5J3P0mBHogfVz2Ss3lFF86pDiVjvddoYNcaAwUnWj8ryNpgUq5_fn9AjbHs1tpK-aKOxee_Wmdgcf93c22nQ94H6gfHbrOtDhCKqKC9ypWpaXmSAf5TbLY_IDD4PQ7oTmwcX9aeE49EAvgUvKIKEjmEbtHTcA3eq-ABwFe4mw",
+      "e": "AQAB",
+      "alg": "RS384",
+      "use": "sig",
+      "kid": "a672474e686e033189a64aec67459672"
     }
   ]
 }
